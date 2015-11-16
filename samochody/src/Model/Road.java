@@ -43,8 +43,12 @@ public class Road {
     }
 
 
-    public void setCar(int dis, int pas,int v) {
-        roads[dis][pas].setCar(v);
+    public void setCar(int dis, int pas,int v, int lenght) {
+        for (int i = 0; i < lenght; i++) {
+            roads[dis + i][pas].setCar(v);
+
+        }
+
     }
     public void setEmpty(int dis, int pas){
         roads[dis][pas].setEmpty();
