@@ -44,7 +44,7 @@ public class CarPanel extends JPanel implements Runnable {
                     }
 
                 }
-                System.out.println("");
+
 
             }
 
