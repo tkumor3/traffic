@@ -7,14 +7,20 @@ import java.util.Random;
  */
 public class Car {
     private int pas, dys;
-    private int pas_l,dys_l;
     private int v, vmax;
+    private int length;
     private boolean is_safety;
     private int free_cell;
     private int next_v;
+    private static int ID = 0;
+    private int carID;
 
 
     Car() {
+        Car.ID++;
+        carID = ID;
+        System.out.println(carID);
+        length = 3;
         pas = 0;
         dys = 0;
         Random generator = new Random();
@@ -57,17 +63,17 @@ public class Car {
     dostosowanie prędkości
      */
     private void checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas) throws CarFinish{
-
+        my_pos_dis = my_pos_dis + length;
         free_cell = 0;
         try {
-            while (!(road[my_pos_dis + 1][my_pos_pas].is_car()) && free_cell < v+1) {
+            while (!(road[my_pos_dis+1][my_pos_pas].is_car()) && free_cell < v+1) {
 
                 my_pos_dis += 1;
 
                 free_cell += 1;
 
             }
-            if (free_cell < 16)
+            if (free_cell < v)
                 next_v = road[my_pos_dis+1][my_pos_pas ].getV();
 
         }catch (Exception e){
@@ -99,5 +105,12 @@ public class Car {
 
     public int getV() {
         return v;
+    }
+
+    public int getLength() {
+        return length;
+    }
+    public int getBumper() {
+        return length+dys;
     }
 }

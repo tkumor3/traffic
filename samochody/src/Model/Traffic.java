@@ -8,6 +8,7 @@ import java.util.Random;
  */
 public class Traffic implements Runnable {
     private LinkedList<Car> cars;
+    private LinkedList<Car> wait_cars;
     private Road road;
     private Car f_car;
     private TrafficLight light;
@@ -16,6 +17,7 @@ public class Traffic implements Runnable {
     public Traffic(){
         road = new  Road(1000,1);
         cars = new LinkedList<Car>();
+        wait_cars = new LinkedList<Car>();
         cars.add(new Car());
         generator = new Random();
         light = new TrafficLight(50,20,10);
@@ -31,12 +33,22 @@ public class Traffic implements Runnable {
             }
         }
 
+
+        if(!wait_cars.isEmpty() && cars.getLast().getDys() > wait_cars.getFirst().getBumper()){
+            cars.add(wait_cars.getFirst());
+            wait_cars.removeFirst();
+        }
+
         cars.remove(f_car);
 
         int proba = generator.nextInt(3) + 1;
         if(proba == 3){
-            if(cars.getLast().getDys() != 0)
-            cars.addLast(new Car());
+            Car m_car =  new Car();
+            if(cars.getLast().getDys() > m_car.getBumper() && wait_cars.isEmpty())
+                cars.addLast(m_car);
+            else{
+                wait_cars.add(m_car);
+            }
 
         }
 
@@ -52,8 +64,7 @@ public class Traffic implements Runnable {
         if(!cars.isEmpty()) {
             road.reset();
             for (Car a : cars) {
-
-                road.setCar(a.getDys(), a.getPas(), a.getV());
+                road.setCar(a.getDys(), a.getPas(), a.getV(), a.getLength());
             }
         }
     }
