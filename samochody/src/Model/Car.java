@@ -13,6 +13,7 @@ public class Car {
     private int free_cell;
     private int next_v;
     private static int ID = 0;
+    private Driver driver;
     private int carID;
 
 
@@ -23,10 +24,12 @@ public class Car {
         length = 3;
         pas = 0;
         dys = 0;
+        pas = 0;
         Random generator = new Random();
         vmax = 6;
         int i = generator.nextInt(6) + 1;
         v = i;
+
 
     }
 
