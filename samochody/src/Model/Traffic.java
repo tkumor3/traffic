@@ -15,7 +15,7 @@ public class Traffic implements Runnable {
     Random generator;
 
     public Traffic(){
-        road = new  Road(1000,1);
+        road = new  Road(1000,2);
         cars = new LinkedList<Car>();
         wait_cars = new LinkedList<Car>();
         cars.add(new Car());

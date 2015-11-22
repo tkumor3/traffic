@@ -23,7 +23,7 @@ public class GUI extends JFrame {
 
         add(board);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000,50);
+        setSize(1000,100);
         setVisible(true);
     }
     static GUI ssp;

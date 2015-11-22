@@ -30,15 +30,15 @@ public class CarPanel extends JPanel implements Runnable {
                     if(traffic.getRoad().getRoads()[i][j].is_car()){
                         if(traffic.getRoad().getRoads()[i][j].getIs_car() == TypeOfCell.CAR) {
                             g.setColor(Color.green);
-                            g.drawRect(i * 5, j, 5, 20);
+                            g.drawRect(i * 5, j*5, 5, 5);
                         }else {
                             g.setColor(Color.red);
-                            g.drawRect(i * 5, j, 5, 20);
+                            g.drawRect(i * 5, j*5, 5, 5);
                         }
 
                     }else {
                         g.setColor(Color.gray);
-                        g.fillRect(i*5,j,5,20);
+                        g.fillRect(i*5,j*5+1,5,5);
 
 
                     }
