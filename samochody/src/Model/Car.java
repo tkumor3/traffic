@@ -13,8 +13,10 @@ public class Car {
     private int free_cell;
     private int next_v;
     private static int ID = 0;
-    private Driver driver;
+    private Sensor sensorl;
+    private Sensor sensorr;
     private int carID;
+    private int a;
 
 
     Car() {
@@ -23,12 +25,16 @@ public class Car {
         System.out.println(carID);
         length = 3;
         pas = 0;
-        dys = 0;
+        dys = 15;
         pas = 0;
         Random generator = new Random();
-        vmax = 6;
+
         int i = generator.nextInt(6) + 1;
         v = i;
+        vmax = i%3 + 6;
+        a = i%3 +1;
+        sensorl = new LeftSensor();
+        sensorr = new RightSensor();
 
 
     }
@@ -38,10 +44,10 @@ public class Car {
      */
     private void acceletion() {
         if (!is_safety) {
-            v -= 1;
+            v -= a;
         } else {
             if (!(v == vmax)) {
-                v += 1;
+                v += a;
             }
         }
     }
@@ -51,7 +57,7 @@ public class Car {
 
     private void move() {
 
-        if(v-(next_v+free_cell)<0) {
+        if((next_v+free_cell)-v > 0) {
             dys += v;
             is_safety = true;
             acceletion();
@@ -68,6 +74,11 @@ public class Car {
     private void checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas) throws CarFinish{
         my_pos_dis = my_pos_dis + length;
         free_cell = 0;
+
+        if(pas > 0 && sensorr.CheckRoad(road,my_pos_dis,my_pos_pas,v)){
+            pas -= 1;
+        }
+
         try {
             while (!(road[my_pos_dis+1][my_pos_pas].is_car()) && free_cell < v+1) {
 
@@ -77,7 +88,12 @@ public class Car {
 
             }
             if (free_cell < v)
-                next_v = road[my_pos_dis+1][my_pos_pas ].getV();
+                if(pas < 1 && sensorl.CheckRoad(road,dys+3,my_pos_pas,v)){
+                    pas =+1;
+                    next_v = v;
+                }else {
+                    next_v = road[my_pos_dis + 1][my_pos_pas].getV();
+                }
 
         }catch (Exception e){
             throw new CarFinish();
