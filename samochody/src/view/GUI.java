@@ -1,9 +1,11 @@
 package view;
 
 
+import Model.Connection;
 import Model.Traffic;
 
 import javax.swing.*;
+import java.io.IOException;
 
 
 /**
@@ -34,7 +36,8 @@ public class GUI extends JFrame {
             public void run() {
                 ssp = new GUI();
 
-            }
+                }
+
         });
 
     }

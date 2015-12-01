@@ -1,7 +1,11 @@
 package Model;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
+
 
 /**
  * Created by Tomek on 16.10.15.
@@ -14,14 +18,23 @@ public class Traffic implements Runnable {
     private TrafficLight light;
     Random generator;
 
-    public Traffic(){
-        road = new  Road(1000,2);
+    public Traffic() {
+        road = new Road(1000, 2);
         cars = new LinkedList<Car>();
         wait_cars = new LinkedList<Car>();
         cars.add(new Car());
         generator = new Random();
-        light = new TrafficLight(50,20,10);
+        light = new TrafficLight(50, 20, 10);
+        Gson gson = new Gson();
+        String roadString = gson.toJson(new JsonUtils.RoadNoCells(road));
 
+
+        Connection connection = new Connection();
+        try {
+            connection.sendRoad(roadString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     void simulation(){
         light.driver(road);
@@ -87,7 +100,7 @@ public class Traffic implements Runnable {
                  }
 
                  }
-             System.out.println("");
+
 
             }
     }
@@ -105,6 +118,11 @@ public class Traffic implements Runnable {
                 e.printStackTrace();
             }
             simulation();
+            Gson gson = new Gson();
+            String carsString = gson.toJson(cars);
+            System.out.println(carsString);
+
+
         }
     }
 }
