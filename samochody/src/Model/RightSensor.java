@@ -5,25 +5,18 @@ package Model;
  */
 public class RightSensor implements Sensor  {
     @Override
-    public boolean CheckRoad(Cell_Road[][] myRoad, int dis, int pas, int v) throws CarFinish {
+    public boolean CheckRoad(Cell_Road[][] myRoad, int dis, int pas, int v, int lenght) throws CarFinish {
         try {
-
-
             Cell_Road pom;
-            if (dis > 10) {
-                for (int j = dis - 10; j < dis + v + 2; j++) {
+
+                for (int j = dis - lenght; j < dis + v; j++) {
                     pom = myRoad[j][pas - 1];
-                    if (pom.is_car() && (j - dis) + pom.getV() < v) {
+                    if (pom.is_car() && (j+pom.getV() - dis + v) > 1  || pom.is_car() && (dis > j)) {
                         return false;
                     }
                 }
                 return true;
-            } else {
 
-                return false;
-
-
-            }
         }catch (Exception e){
             throw new CarFinish();
         }

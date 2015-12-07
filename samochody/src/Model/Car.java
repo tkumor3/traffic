@@ -28,7 +28,6 @@ public class Car {
         dys = 15;
         pas = 0;
         Random generator = new Random();
-
         int i = generator.nextInt(6) + 1;
         v = i;
         vmax = i%3 + 6;
@@ -42,28 +41,36 @@ public class Car {
     /**
      * przyspieszenie naszego pojazdu ale tylko jesli jest to bezpieczne
      */
+
     private void acceletion() {
         if (!is_safety) {
             v -= a;
         } else {
             if (!(v == vmax)) {
                 v += a;
+            }else{
+                v = vmax;
             }
         }
     }
+
     /*
         jesli jest mozliwość to jade swoja prędkośćia w przeciwnym razie podjeżdza pod drugi podjazd i przejmuje jego prędkość
      */
 
     private void move() {
 
-        if((next_v+free_cell)-v > 0) {
+        if(is_safety) {
+
             dys += v;
-            is_safety = true;
+
             acceletion();
+
         }else {
+
             dys = (free_cell+dys);
-               v = next_v;
+            v = next_v;
+
         }
     }
 
@@ -72,33 +79,37 @@ public class Car {
     dostosowanie prędkości
      */
     private void checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas) throws CarFinish{
+
         my_pos_dis = my_pos_dis + length;
         free_cell = 0;
 
-        if(pas > 0 && sensorr.CheckRoad(road,my_pos_dis,my_pos_pas,v)){
+        if(pas > 0 && sensorr.CheckRoad(road,my_pos_dis,my_pos_pas,v,length)){
             pas -= 1;
         }
-
         try {
-            while (!(road[my_pos_dis+1][my_pos_pas].is_car()) && free_cell < v+1) {
-
+            while (!(road[my_pos_dis+1][my_pos_pas].is_car()) && free_cell <= v+1) {
                 my_pos_dis += 1;
-
                 free_cell += 1;
-
             }
-            if (free_cell < v)
-                if(pas < 1 && sensorl.CheckRoad(road,dys+3,my_pos_pas,v)){
-                    pas =+1;
-                    next_v = v;
-                }else {
+            if (free_cell  < v+1 ) {
+                next_v = road[my_pos_dis + 1][my_pos_pas].getV();
+                if(next_v+free_cell < v){
+                if (pas < 1 && sensorl.CheckRoad(road, dys + 3, my_pos_pas, v, length)) {
+                    pas = + 1;
+                    is_safety = true;
+                } else {
+                    is_safety =false;
                     next_v = road[my_pos_dis + 1][my_pos_pas].getV();
                 }
+            }
 
+
+            }else {
+                is_safety = true;
+            }
         }catch (Exception e){
             throw new CarFinish();
         }
-
     }
 
 

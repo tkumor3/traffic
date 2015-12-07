@@ -7,7 +7,6 @@ public class Road {
     private Cell_Road[][] roads;
     private int distance;
     private int pasy;
-
     public Road(int dis, int pas) {
         distance = dis;
         pasy = pas;
@@ -22,16 +21,12 @@ public class Road {
 
 
     }
-
     public Cell_Road[][] getRoads() {
         return roads;
     }
-
-
     /*
     czyszczenie tablicy !!! zobaczymy jak bedzoe obciazało pamiec
      */
-
     public void reset() {
         for (int i = 0; i < distance; i++) {
             for (int j = 0; j < pasy; j++) {
@@ -41,8 +36,6 @@ public class Road {
             }
         }
     }
-
-
     public void setCar(int dis, int pas,int v, int lenght) {
         for (int i = 0; i < lenght; i++) {
             roads[dis + i][pas].setCar(v);
@@ -56,11 +49,9 @@ public class Road {
     public void setLights(int dis, int pas){
         roads[dis][pas].setLights();
     }
-
     public int getDistance() {
         return distance;
     }
-
     public int getPasy() {
         return pasy;
     }

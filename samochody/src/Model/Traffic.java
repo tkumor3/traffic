@@ -23,6 +23,7 @@ public class Traffic implements Runnable {
         light = new TrafficLight(50,20,10);
 
     }
+
     void simulation(){
         light.driver(road);
         for( Car a :cars){
@@ -76,7 +77,6 @@ public class Traffic implements Runnable {
 
     }
 
-
     void printRoad(){
         for (int i = 0; i < road.getDistance(); i++) {
             for (int j = 0; j < road.getPasy(); j++) {
@@ -100,7 +100,7 @@ public class Traffic implements Runnable {
     public void run() {
         while(true) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(800);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
