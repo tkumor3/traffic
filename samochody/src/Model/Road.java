@@ -30,24 +30,35 @@ public class Road {
     public void reset() {
         for (int i = 0; i < distance; i++) {
             for (int j = 0; j < pasy; j++) {
-                if(!(roads[i][j].getIs_car() == TypeOfCell.LIGHTS)) {
+                if(!(roads[i][j].getType() == (TypeOfCell.RedLIGHTS) || (roads[i][j].getType() ==TypeOfCell.GreenLIGHTS))) {
                     setEmpty(i, j);
                 }
             }
         }
     }
-    public void setCar(int dis, int pas,int v, int lenght) {
+    public void setCar(int dis, int pas,int v, int lenght) throws CarFinish {
         for (int i = 0; i < lenght; i++) {
-            roads[dis + i][pas].setCar(v);
+            try {
+
+
+                roads[dis + i][pas].setCar(v);
+            }catch (Exception e){
+                throw new CarFinish();
+            }
 
         }
 
     }
+
+
     public void setEmpty(int dis, int pas){
         roads[dis][pas].setEmpty();
     }
-    public void setLights(int dis, int pas){
-        roads[dis][pas].setLights();
+    public void setRedLights(int dis, int pas){
+        roads[dis][pas].setRedLights();
+    }
+    public void setGreenLights(int dis, int pas){
+        roads[dis][pas].setGreenLights();
     }
     public int getDistance() {
         return distance;
@@ -55,4 +66,6 @@ public class Road {
     public int getPasy() {
         return pasy;
     }
+
+
 }

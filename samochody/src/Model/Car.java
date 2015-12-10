@@ -15,8 +15,11 @@ public class Car {
     private static int ID = 0;
     private Sensor sensorl;
     private Sensor sensorr;
+    private Sensor lsensor;
     private int carID;
     private int a;
+    private boolean i_see_light;
+    private boolean through_light;
 
 
     Car() {
@@ -34,6 +37,11 @@ public class Car {
         a = i%3 +1;
         sensorl = new LeftSensor();
         sensorr = new RightSensor();
+        lsensor = new LightSensor();
+        i_see_light = false;
+        through_light = true;
+
+
 
 
     }
@@ -63,6 +71,9 @@ public class Car {
         if(is_safety) {
 
             dys += v;
+            if(i_see_light){
+                dys = dys+6;
+            }
 
             acceletion();
 
@@ -78,43 +89,59 @@ public class Car {
     sprawdzam ile mam wolnych miejsc prze autem i z jaką prędkością ten samochów się porusza
     dostosowanie prędkości
      */
-    private void checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas) throws CarFinish{
+    private boolean checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas) throws CarFinish {
+        if(my_pos_dis > 980){
+            throw new CarFinish();
+        }
 
         my_pos_dis = my_pos_dis + length;
         free_cell = 0;
 
-        if(pas > 0 && sensorr.CheckRoad(road,my_pos_dis,my_pos_pas,v,length)){
+        if (pas > 0 && sensorr.CheckRoad(road, my_pos_dis, my_pos_pas, v, length)) {
             pas -= 1;
+
         }
         try {
-            while (!(road[my_pos_dis+1][my_pos_pas].is_car()) && free_cell <= v+1) {
+            while ((!road[my_pos_dis + 1][my_pos_pas].is_car()) && free_cell <= v + 1) {
+                if(road[my_pos_dis + 1][my_pos_pas].getType() == TypeOfCell.GreenLIGHTS || road[my_pos_dis + 1][my_pos_pas].getType() == TypeOfCell.RedLIGHTS){
+                    if(road[my_pos_dis + 1][my_pos_pas].getType() == TypeOfCell.RedLIGHTS){
+                        next_v = 0;
+                        return false;
+                    }else{
+                        i_see_light = true;
+
+                    }
+                }
                 my_pos_dis += 1;
                 free_cell += 1;
+
             }
-            if (free_cell  < v+1 ) {
+            if (free_cell < v + 1) {
                 next_v = road[my_pos_dis + 1][my_pos_pas].getV();
-                if(next_v+free_cell < v){
-                if (pas < 1 && sensorl.CheckRoad(road, dys + 3, my_pos_pas, v, length)) {
-                    pas = + 1;
-                    is_safety = true;
-                } else {
-                    is_safety =false;
-                    next_v = road[my_pos_dis + 1][my_pos_pas].getV();
+                if (next_v + free_cell < v) {
+                    if (pas < 1 && sensorl.CheckRoad(road, dys + 3, my_pos_pas, v, length)) {
+                        pas = +1;
+                        return true;
+                    } else {
+
+                        return false;
+
+                    }
                 }
-            }
 
 
-            }else {
-                is_safety = true;
+            } else {
+                return true;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new CarFinish();
         }
+        return true;
     }
 
 
     public void makeMove(Cell_Road [][] my_road) throws CarFinish {
-        checkRoad(my_road,dys,pas);
+        is_safety = checkRoad(my_road,dys,pas);
         move();
     }
 

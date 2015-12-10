@@ -20,7 +20,7 @@ public class Traffic implements Runnable {
         wait_cars = new LinkedList<Car>();
         cars.add(new Car());
         generator = new Random();
-        light = new TrafficLight(50,20,10);
+        light = new TrafficLight(50,10,10);
 
     }
 
@@ -31,16 +31,17 @@ public class Traffic implements Runnable {
                 a.makeMove(road.getRoads());
             } catch (CarFinish carFinish) {
                 f_car = a;
+
             }
         }
-
+        cars.remove(f_car);
 
         if(!wait_cars.isEmpty() && cars.getLast().getDys() > wait_cars.getFirst().getBumper()){
             cars.add(wait_cars.getFirst());
             wait_cars.removeFirst();
         }
 
-        cars.remove(f_car);
+
 
         int proba = generator.nextInt(3) + 1;
         if(proba == 3){
@@ -65,8 +66,14 @@ public class Traffic implements Runnable {
         if(!cars.isEmpty()) {
             road.reset();
             for (Car a : cars) {
-                road.setCar(a.getDys(), a.getPas(), a.getV(), a.getLength());
+                try {
+                    road.setCar(a.getDys(), a.getPas(), a.getV(), a.getLength());
+                } catch (CarFinish carFinish) {
+                    f_car = a;
+                }
+                cars.remove(f_car);
             }
+
         }
     }
 
@@ -100,7 +107,7 @@ public class Traffic implements Runnable {
     public void run() {
         while(true) {
             try {
-                Thread.sleep(800);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
