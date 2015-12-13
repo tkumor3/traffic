@@ -11,22 +11,24 @@ public class Traffic implements Runnable {
     private LinkedList<Car> wait_cars;
     private Road road;
     private Car f_car;
+    private int time;
     private TrafficLight light;
     Random generator;
 
     public Traffic(){
-        road = new  Road(1000,2);
+        road = new  Road(1000,3);
         cars = new LinkedList<Car>();
         wait_cars = new LinkedList<Car>();
         cars.add(new Car());
+        time = 0;
         generator = new Random();
-        light = new TrafficLight(50,10,10);
+        light = new TrafficLight(50,30,10);
 
     }
 
-    void simulation(){
+    void simulation() {
         light.driver(road);
-        for( Car a :cars){
+        for (Car a : cars) {
             try {
                 a.makeMove(road.getRoads());
             } catch (CarFinish carFinish) {
@@ -36,44 +38,37 @@ public class Traffic implements Runnable {
         }
         cars.remove(f_car);
 
-        if(!wait_cars.isEmpty() && cars.getLast().getDys() > wait_cars.getFirst().getBumper()){
+        if (!wait_cars.isEmpty() && cars.getLast().getDys() > wait_cars.getFirst().getBumper()) {
             cars.add(wait_cars.getFirst());
             wait_cars.removeFirst();
         }
 
 
-
         int proba = generator.nextInt(3) + 1;
-        if(proba == 3){
-            Car m_car =  new Car();
-            if(cars.getLast().getDys() > m_car.getBumper() && wait_cars.isEmpty())
+        if (proba == 3) {
+            Car m_car = new Car();
+            if (cars.getLast().getDys() > m_car.getBumper() && wait_cars.isEmpty())
                 cars.addLast(m_car);
-            else{
+            else {
                 wait_cars.add(m_car);
             }
 
         }
 
         int dog_p = generator.nextInt(20);
-        if(dog_p == 2){
+        if (dog_p == 2) {
             dogOnRoad();
         }
 
 
-
-
-
-        if(!cars.isEmpty()) {
+        if (!cars.isEmpty()) {
             road.reset();
             for (Car a : cars) {
-                try {
-                    road.setCar(a.getDys(), a.getPas(), a.getV(), a.getLength());
-                } catch (CarFinish carFinish) {
-                    f_car = a;
-                }
-                cars.remove(f_car);
-            }
 
+                road.setCar(a.getDys(), a.getPas(), a.getV(), a.getLength());
+
+
+            }
         }
     }
 
@@ -107,11 +102,12 @@ public class Traffic implements Runnable {
     public void run() {
         while(true) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             simulation();
+            time ++;
         }
     }
 }

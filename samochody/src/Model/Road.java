@@ -36,15 +36,13 @@ public class Road {
             }
         }
     }
-    public void setCar(int dis, int pas,int v, int lenght) throws CarFinish {
+    public void setCar(int dis, int pas,int v, int lenght) {
         for (int i = 0; i < lenght; i++) {
-            try {
+
 
 
                 roads[dis + i][pas].setCar(v);
-            }catch (Exception e){
-                throw new CarFinish();
-            }
+
 
         }
 

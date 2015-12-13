@@ -33,6 +33,7 @@ public class Car {
         Random generator = new Random();
         int i = generator.nextInt(6) + 1;
         v = i;
+        pas = i%3;
         vmax = i%3 + 6;
         a = i%3 +1;
         sensorl = new LeftSensor();
@@ -43,6 +44,48 @@ public class Car {
 
 
 
+
+    }
+    Car(int dys) {
+        Car.ID++;
+        carID = ID;
+        System.out.println(carID);
+        length = 3;
+        pas = 0;
+        this.dys = dys;
+        pas = 0;
+        Random generator = new Random();
+        int i = generator.nextInt(6) + 1;
+        v = i;
+        pas = i%3;
+        vmax = i%3 + 6;
+        a = i%3 +1;
+        sensorl = new LeftSensor();
+        sensorr = new RightSensor();
+        lsensor = new LightSensor();
+        i_see_light = false;
+        through_light = true;
+
+
+
+
+    }
+    Car(int pas,int dys ,int vmax, int v, int a, int length){
+
+        Car.ID++;
+        carID = ID;
+        System.out.println(carID);
+        this.length = length;
+        this.pas = pas;
+        this.dys = dys;
+        this.v = v;
+        this.vmax = vmax;
+        this.a = a;
+        sensorl = new LeftSensor();
+        sensorr = new RightSensor();
+        lsensor = new LightSensor();
+        i_see_light = false;
+        through_light = true;
 
     }
 
@@ -71,9 +114,7 @@ public class Car {
         if(is_safety) {
 
             dys += v;
-            if(i_see_light){
-                dys = dys+6;
-            }
+
 
             acceletion();
 
@@ -90,7 +131,7 @@ public class Car {
     dostosowanie prędkości
      */
     private boolean checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas) throws CarFinish {
-        if(my_pos_dis > 980){
+        if(my_pos_dis > 950){
             throw new CarFinish();
         }
 
@@ -108,8 +149,8 @@ public class Car {
                         next_v = 0;
                         return false;
                     }else{
-                        i_see_light = true;
-
+                        dys = dys+6;
+                        my_pos_dis =+6;
                     }
                 }
                 my_pos_dis += 1;
@@ -119,8 +160,8 @@ public class Car {
             if (free_cell < v + 1) {
                 next_v = road[my_pos_dis + 1][my_pos_pas].getV();
                 if (next_v + free_cell < v) {
-                    if (pas < 1 && sensorl.CheckRoad(road, dys + 3, my_pos_pas, v, length)) {
-                        pas = +1;
+                    if (pas < 2 && sensorl.CheckRoad(road, dys + 3, my_pos_pas, v, length)) {
+                        pas = pas+1;
                         return true;
                     } else {
 
@@ -143,6 +184,10 @@ public class Car {
     public void makeMove(Cell_Road [][] my_road) throws CarFinish {
         is_safety = checkRoad(my_road,dys,pas);
         move();
+    }
+
+    public void setPas(int pas) {
+        this.pas = pas;
     }
 
     public int getDys() {
