@@ -1,5 +1,6 @@
 package Model;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -10,40 +11,51 @@ public class Traffic implements Runnable {
     private LinkedList<Car> cars;
     private LinkedList<Car> wait_cars;
     private Road road;
-    private Car f_car;
     private int time;
-    private TrafficLight light;
+    private LinkedList<CrossRoad> crossRoad;
+    private LinkedList<TrafficLight> light;
     Random generator;
 
     public Traffic(){
         road = new  Road(1000,3);
         cars = new LinkedList<Car>();
         wait_cars = new LinkedList<Car>();
+        crossRoad = new LinkedList<CrossRoad>();
+        light = new LinkedList<TrafficLight>();
         cars.add(new Car());
         time = 0;
         generator = new Random();
-        light = new TrafficLight(50,30,10);
+        light.add(new TrafficLight(50, 30, 10));
+        light.add(new TrafficLight(100,90,10));
+        crossRoad.add(new CrossRoad(51, 2));
 
     }
 
     void simulation() {
+        for (TrafficLight light : this.light )
         light.driver(road);
-        for (Car a : cars) {
-            try {
-                a.makeMove(road.getRoads());
-            } catch (CarFinish carFinish) {
-                f_car = a;
 
+        for(CrossRoad crossRoad : this.crossRoad) {
+            crossRoad.addCar(time);
+            while (crossRoad.canGo(road)) {
+                cars.add(crossRoad.getCar());
             }
         }
-        cars.remove(f_car);
 
+        for(Iterator<Car> iterator = cars.iterator(); iterator.hasNext();){
+            try {
+                Car a = iterator.next();
+                a.makeMove(road.getRoads(),light);
+            } catch (CarFinish carFinish) {
+                iterator.remove();
+            }
+
+
+        }
         if (!wait_cars.isEmpty() && cars.getLast().getDys() > wait_cars.getFirst().getBumper()) {
             cars.add(wait_cars.getFirst());
             wait_cars.removeFirst();
         }
-
-
         int proba = generator.nextInt(3) + 1;
         if (proba == 3) {
             Car m_car = new Car();

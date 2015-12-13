@@ -9,6 +9,8 @@ public class CrossRoad {
     private LinkedList<Car> car;
     private int dis;
     private int interval;
+    private int pas;
+    private boolean free_crossroad;
 
     CrossRoad(int dis, int interval){
         this.dis = dis;
@@ -22,18 +24,24 @@ public class CrossRoad {
 
     }
     public Car getCar(){
-        return car.removeFirst();
+        Car pomCar =  car.removeFirst();
+        pomCar.setPas(pas);
+        return pomCar ;
     }
     public boolean canGo(Road road) {
         if ((road.getRoads()[dis-1][0].getType() == TypeOfCell.RedLIGHTS)&& !car.isEmpty()) {
-            for (int i = dis - 2; i < dis + 4; i++) {
-                for (int j = 0; j < road.getPasy(); j++) {
+            for (int j = 0; j < road.getPasy(); j++) {
+                free_crossroad = true;
+                for (int i = dis - 2; i < dis + 4; i++) {
                     if (!(road.getRoads()[i][j].getType() == TypeOfCell.EMPTY)) {
-                        return false;
+                        free_crossroad = false;
+                        break;
                     }
                 }
+                if(free_crossroad == true)
+                    pas = j;
+                    return true;
             }
-            return true;
         }
         return false;
     }

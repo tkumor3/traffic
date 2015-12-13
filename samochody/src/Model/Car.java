@@ -1,5 +1,6 @@
 package Model;
 
+import java.util.LinkedList;
 import java.util.Random;
 
 /**
@@ -18,8 +19,8 @@ public class Car {
     private Sensor lsensor;
     private int carID;
     private int a;
-    private boolean i_see_light;
-    private boolean through_light;
+    private TrafficLight cloest_light;
+    private boolean wait;
 
 
     Car() {
@@ -39,10 +40,6 @@ public class Car {
         sensorl = new LeftSensor();
         sensorr = new RightSensor();
         lsensor = new LightSensor();
-        i_see_light = false;
-        through_light = true;
-
-
 
 
     }
@@ -56,17 +53,13 @@ public class Car {
         pas = 0;
         Random generator = new Random();
         int i = generator.nextInt(6) + 1;
-        v = i;
-        pas = i%3;
+        v = 4;
+        pas = 0;
         vmax = i%3 + 6;
         a = i%3 +1;
         sensorl = new LeftSensor();
         sensorr = new RightSensor();
         lsensor = new LightSensor();
-        i_see_light = false;
-        through_light = true;
-
-
 
 
     }
@@ -84,8 +77,6 @@ public class Car {
         sensorl = new LeftSensor();
         sensorr = new RightSensor();
         lsensor = new LightSensor();
-        i_see_light = false;
-        through_light = true;
 
     }
 
@@ -94,13 +85,15 @@ public class Car {
      */
 
     private void acceletion() {
-        if (!is_safety) {
-            v -= a;
-        } else {
-            if (!(v == vmax)) {
-                v += a;
-            }else{
-                v = vmax;
+        if(!wait) {
+            if (!is_safety) {
+                v -= a;
+            } else {
+                if (v + a <= vmax) {
+                    v += a;
+                } else {
+                    v = vmax;
+                }
             }
         }
     }
@@ -112,16 +105,14 @@ public class Car {
     private void move() {
 
         if(is_safety) {
-
             dys += v;
-
-
             acceletion();
 
         }else {
 
-            dys = (free_cell+dys);
-            v = next_v;
+                dys = (free_cell + dys);
+                v = next_v;
+
 
         }
     }
@@ -130,13 +121,21 @@ public class Car {
     sprawdzam ile mam wolnych miejsc prze autem i z jaką prędkością ten samochów się porusza
     dostosowanie prędkości
      */
-    private boolean checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas) throws CarFinish {
-        if(my_pos_dis > 950){
-            throw new CarFinish();
-        }
-
+    private boolean checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas, LinkedList<TrafficLight> lights) throws CarFinish {
+        if(my_pos_dis > 990)
+        throw new CarFinish();
         my_pos_dis = my_pos_dis + length;
         free_cell = 0;
+
+
+        for (TrafficLight light : lights){
+            if(light.getDist() > my_pos_dis){
+                cloest_light = light;
+                break;
+            }
+        }
+
+
 
         if (pas > 0 && sensorr.CheckRoad(road, my_pos_dis, my_pos_pas, v, length)) {
             pas -= 1;
@@ -144,19 +143,23 @@ public class Car {
         }
         try {
             while ((!road[my_pos_dis + 1][my_pos_pas].is_car()) && free_cell <= v + 1) {
-                if(road[my_pos_dis + 1][my_pos_pas].getType() == TypeOfCell.GreenLIGHTS || road[my_pos_dis + 1][my_pos_pas].getType() == TypeOfCell.RedLIGHTS){
-                    if(road[my_pos_dis + 1][my_pos_pas].getType() == TypeOfCell.RedLIGHTS){
+                if(my_pos_dis + 1 == cloest_light.getDist()){
+                    if(!cloest_light.isCan_go()){
+                        dys = my_pos_dis - 3;
+                        free_cell = 0;
                         next_v = 0;
+                        wait = true;
                         return false;
                     }else{
-                        dys = dys+6;
-                        my_pos_dis =+6;
-                    }
-                }
-                my_pos_dis += 1;
-                free_cell += 1;
+                        wait = false;
 
-            }
+                    }
+
+                }
+            my_pos_dis += 1;
+            free_cell += 1;
+             }
+
             if (free_cell < v + 1) {
                 next_v = road[my_pos_dis + 1][my_pos_pas].getV();
                 if (next_v + free_cell < v) {
@@ -181,10 +184,13 @@ public class Car {
     }
 
 
-    public void makeMove(Cell_Road [][] my_road) throws CarFinish {
-        is_safety = checkRoad(my_road,dys,pas);
+    public void makeMove(Cell_Road [][] my_road,LinkedList<TrafficLight> light) throws CarFinish {
+        is_safety = checkRoad(my_road,dys,pas,light);
         move();
     }
+
+
+
 
     public void setPas(int pas) {
         this.pas = pas;

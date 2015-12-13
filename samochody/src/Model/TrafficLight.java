@@ -52,7 +52,11 @@ public class TrafficLight {
     }
 
 
+    public int getDist() {
+        return dist;
+    }
 
-
-
+    public boolean isCan_go() {
+        return can_go;
+    }
 }
