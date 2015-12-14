@@ -11,12 +11,18 @@ public class CrossRoad {
     private int interval;
     private int pas;
     private boolean free_crossroad;
+    private TrafficLight  light;
 
-    CrossRoad(int dis, int interval){
+    CrossRoad(int dis, int interval,int red,int green){
         this.dis = dis;
         this.interval = interval;
+        light = new TrafficLight(dis-1,red,green);
         car = new LinkedList<Car>();
+
     }
+
+
+
     public void addCar(int time){
         if(time%interval == 0){
             car.add(new Car(dis));
@@ -28,19 +34,44 @@ public class CrossRoad {
         pomCar.setPas(pas);
         return pomCar ;
     }
-    public boolean canGo(Road road) {
-        if ((road.getRoads()[dis-1][0].getType() == TypeOfCell.RedLIGHTS)&& !car.isEmpty()) {
+
+    public boolean canGo2(Road road) {
+        if ((!light.isCan_go() && !car.isEmpty())) {
             for (int j = 0; j < road.getPasy(); j++) {
                 free_crossroad = true;
-                for (int i = dis - 2; i < dis + 4; i++) {
+                for (int i = dis ; i < dis + 4; i++) {
                     if (!(road.getRoads()[i][j].getType() == TypeOfCell.EMPTY)) {
                         free_crossroad = false;
                         break;
                     }
                 }
-                if(free_crossroad == true)
+                if (free_crossroad == true) {
                     pas = j;
                     return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public TrafficLight getLight() {
+        return light;
+    }
+
+    public boolean canGo(Road road) {
+        if ((road.getRoads()[dis-1][0].getType() == TypeOfCell.RedLIGHTS)&& !car.isEmpty()) {
+            for (int j = 0; j < road.getPasy(); j++) {
+                free_crossroad = true;
+                for (int i = dis ; i < dis + 4; i++) {
+                    if (!(road.getRoads()[i][j].getType() == TypeOfCell.EMPTY)) {
+                        free_crossroad = false;
+                        break;
+                    }
+                }
+                if (free_crossroad == true) {
+                    pas = j;
+                    return true;
+                }
             }
         }
         return false;

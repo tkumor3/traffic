@@ -1,8 +1,6 @@
 package Model;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Tomek on 16.10.15.
@@ -25,9 +23,18 @@ public class Traffic implements Runnable {
         cars.add(new Car());
         time = 0;
         generator = new Random();
-        light.add(new TrafficLight(50, 30, 10));
+
         light.add(new TrafficLight(100,90,10));
-        crossRoad.add(new CrossRoad(51, 2));
+        crossRoad.add(new CrossRoad(51, 2, 30 , 10));
+        for (CrossRoad road : crossRoad ){
+            light.add(road.getLight());
+        }
+        Collections.sort(light, new Comparator<TrafficLight>() {
+            @Override
+            public int compare(TrafficLight o1, TrafficLight o2) {
+                return o1.getDist() <  o2.getDist() ? -1 : 1;
+            }
+        });
 
     }
 
@@ -37,7 +44,7 @@ public class Traffic implements Runnable {
 
         for(CrossRoad crossRoad : this.crossRoad) {
             crossRoad.addCar(time);
-            while (crossRoad.canGo(road)) {
+            while (crossRoad.canGo2(road)) {
                 cars.add(crossRoad.getCar());
             }
         }

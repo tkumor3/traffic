@@ -122,7 +122,7 @@ public class Car {
     dostosowanie prędkości
      */
     private boolean checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas, LinkedList<TrafficLight> lights) throws CarFinish {
-        if(my_pos_dis > 990)
+        if(my_pos_dis > 980)
         throw new CarFinish();
         my_pos_dis = my_pos_dis + length;
         free_cell = 0;
