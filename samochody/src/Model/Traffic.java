@@ -43,13 +43,13 @@ public class Traffic implements Runnable {
         //System.out.println(lightsString);
 
 
-        //connection = new Connection();
-       // try {
-       //     connection.sendRoad(roadString);
-       //     connection.sendSth(lightsString);
-       // } catch (IOException e) {
-      //      e.printStackTrace();
-      //  }
+        connection = new Connection();
+        try {
+           connection.sendRoad(roadString);
+           connection.sendSth(lightsString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         crossRoad.add(new CrossRoad(200, 3, 30 , 10));
         crossRoad.add(new CrossRoad(400, 3, 30 , 10));
@@ -176,14 +176,14 @@ public class Traffic implements Runnable {
             simulation();
             Gson gson = new Gson();
             String carsString = gson.toJson(cars);
-           // try {
-           //     connection.sendSth(carsString);
+             try {
+                 connection.sendSth(carsString);
 
 
-           // } catch (IOException e) {
-           //     e.printStackTrace();
-          //  }
-          //  updateLights(light);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            updateLights(light);
             time ++;
         }
     }
