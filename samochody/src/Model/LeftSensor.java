@@ -6,27 +6,37 @@ package Model;
 public class LeftSensor implements Sensor {
     @Override
 
-    public boolean CheckRoad(Cell_Road[][] myRoad, int dis, int pas, int v) throws CarFinish {
+    public boolean CheckRoad(Cell_Road[][] myRoad, int dis, int pas, int v, int lenght) throws CarFinish {
         Cell_Road pom;
+        int disp = dis - 15 - lenght;
         try {
-            if (dis > 7+5 ) {
-                for (int i = dis - (7+5); i < dis + 1; i++) {
+            /*
+            nie zajezdza drogi
+             */
+            if (disp > 0 ) {
+                for (int i = disp ; i < dis + lenght; i++) {
                     pom = myRoad[i][pas + 1];
-                    if (pom.is_car() && ((dis - i) + (v - pom.getV())) < 0) {
+                    if (pom.is_car() && ((dis - lenght - i+ v - pom.getV())-1) < 0) {
                         return false;
                     }
                 }
+                /*
+                sprawdza czy moze wyprzedzić
+               */
 
-
-                for (int j = dis; j < dis + v; j++) {
+                for (int j = dis; j < dis + v+1; j++) {
                     pom = myRoad[j][pas + 1];
-                    if (pom.is_car() && (j - dis) + pom.getV() < v) {
+                    if ((pom.is_car() && (j+pom.getV() - dis + v) > 1  || pom.is_car() && (dis > j)) ) {
                         return false;
                     }
                 }
+
                 return true;
+
             } else {
+
                 return false;
+
             }
         }catch (Exception e){
             throw new CarFinish();

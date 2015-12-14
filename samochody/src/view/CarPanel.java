@@ -27,13 +27,20 @@ public class CarPanel extends JPanel implements Runnable {
             super.paintComponent(g);
             for (int i = 0; i < traffic.getRoad().getDistance(); i++) {
                 for (int j = 0; j < traffic.getRoad().getPasy(); j++) {
-                    if(traffic.getRoad().getRoads()[i][j].is_car()){
-                        if(traffic.getRoad().getRoads()[i][j].getIs_car() == TypeOfCell.CAR) {
-                            g.setColor(Color.green);
+                    if(!(traffic.getRoad().getRoads()[i][j].getType() == TypeOfCell.EMPTY)){
+                        if(traffic.getRoad().getRoads()[i][j].getType() == TypeOfCell.CAR) {
+                            g.setColor(Color.orange);
                             g.drawRect(i * 5, j*5, 5, 5);
                         }else {
-                            g.setColor(Color.red);
-                            g.drawRect(i * 5, j*5, 5, 5);
+                            if (traffic.getRoad().getRoads()[i][j].getType() == TypeOfCell.RedLIGHTS) {
+                                g.setColor(Color.red);
+                                g.drawRect(i * 5, j * 5, 5, 5);
+                            }else{
+                                if (traffic.getRoad().getRoads()[i][j].getType() == TypeOfCell.GreenLIGHTS) {
+                                    g.setColor(Color.green);
+                                    g.drawRect(i * 5, j * 5, 5, 5);
+                                }
+                            }
                         }
 
                     }else {

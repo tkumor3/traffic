@@ -35,13 +35,13 @@ public class TrafficLight {
             if(can_go){
                time_to_change = time_green;
                 for (int i = 0; i < road.getPasy(); i++) {
-                    road.setEmpty(dist,i);
+                    road.setGreenLights(dist,i);
                 }
 
             }else {
                 time_to_change = time_red;
                 for (int i = 0; i < road.getPasy(); i++) {
-                    road.setLights(dist,i);
+                    road.setRedLights(dist,i);
                 }
             }
 
@@ -52,7 +52,11 @@ public class TrafficLight {
     }
 
 
+    public int getDist() {
+        return dist;
+    }
 
-
-
+    public boolean isCan_go() {
+        return can_go;
+    }
 }
