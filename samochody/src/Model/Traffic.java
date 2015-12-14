@@ -26,7 +26,7 @@ public class Traffic implements Runnable {
     private Connection connection;
 
     public Traffic(){
-        road = new  Road(640,3);
+        road = new  Road(640,2);
         cars = new LinkedList<Car>();
         wait_cars = new LinkedList<Car>();
         crossRoad = new LinkedList<CrossRoad>();
@@ -40,20 +40,20 @@ public class Traffic implements Runnable {
         Gson gson = new Gson();
         String roadString = gson.toJson(new JsonUtils.RoadNoCells(road));
         String lightsString = gson.toJson(new lightsJson(light));
-        System.out.println(lightsString);
+        //System.out.println(lightsString);
 
 
-        connection = new Connection();
-        try {
-            connection.sendRoad(roadString);
-            connection.sendSth(lightsString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //connection = new Connection();
+       // try {
+       //     connection.sendRoad(roadString);
+       //     connection.sendSth(lightsString);
+       // } catch (IOException e) {
+      //      e.printStackTrace();
+      //  }
 
-        crossRoad.add(new CrossRoad(200, 2, 30 , 10));
-        crossRoad.add(new CrossRoad(400, 2, 30 , 10));
-        crossRoad.add(new CrossRoad(600, 2, 30 , 10));
+        crossRoad.add(new CrossRoad(200, 3, 30 , 10));
+        crossRoad.add(new CrossRoad(400, 3, 30 , 10));
+        crossRoad.add(new CrossRoad(600, 3, 30 , 10));
 
         for (CrossRoad road : crossRoad ){
             light.add(road.getLight());
@@ -176,14 +176,14 @@ public class Traffic implements Runnable {
             simulation();
             Gson gson = new Gson();
             String carsString = gson.toJson(cars);
-            try {
-                connection.sendSth(carsString);
+           // try {
+           //     connection.sendSth(carsString);
 
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            updateLights(light);
+           // } catch (IOException e) {
+           //     e.printStackTrace();
+          //  }
+          //  updateLights(light);
             time ++;
         }
     }

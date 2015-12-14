@@ -34,7 +34,7 @@ public class Car {
         Random generator = new Random();
         int i = generator.nextInt(6) + 1;
         v = i;
-        pas = i%3;
+        pas = i%2;
         vmax = i%3 + 6;
         a = i%3 +1;
         sensorl = new LeftSensor();
@@ -122,7 +122,7 @@ public class Car {
     dostosowanie prędkości
      */
     private boolean checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas, LinkedList<TrafficLight> lights) throws CarFinish {
-        if(my_pos_dis > 980)
+        if(my_pos_dis > 620)
         throw new CarFinish();
         my_pos_dis = my_pos_dis + length;
         free_cell = 0;
@@ -163,7 +163,7 @@ public class Car {
             if (free_cell < v + 1) {
                 next_v = road[my_pos_dis + 1][my_pos_pas].getV();
                 if (next_v + free_cell < v) {
-                    if (pas < 2 && sensorl.CheckRoad(road, dys + 3, my_pos_pas, v, length)) {
+                    if (pas < 1 && sensorl.CheckRoad(road, dys + 3, my_pos_pas, v, length)) {
                         pas = pas+1;
                         return true;
                     } else {
