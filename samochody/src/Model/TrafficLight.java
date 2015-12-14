@@ -8,6 +8,7 @@ public class TrafficLight {
     private int time_red;
     private int time_green;
     private boolean can_go;
+    public boolean justChanged = false;
     private int time_to_change;
 
     public TrafficLight(int dist,int time_red,int time_green){
@@ -32,6 +33,7 @@ public class TrafficLight {
     public void driver(Road road){
         if(timer()){
             can_go = !can_go;
+            justChanged = true;
             if(can_go){
                time_to_change = time_green;
                 for (int i = 0; i < road.getPasy(); i++) {

@@ -1,7 +1,11 @@
 package Model;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -15,6 +19,7 @@ public class Traffic implements Runnable {
     private LinkedList<CrossRoad> crossRoad;
     private LinkedList<TrafficLight> light;
     Random generator;
+    private Connection connection;
 
     public Traffic(){
         road = new  Road(1000,3);
@@ -28,6 +33,18 @@ public class Traffic implements Runnable {
         light.add(new TrafficLight(50, 30, 10));
         light.add(new TrafficLight(100,90,10));
         crossRoad.add(new CrossRoad(51, 2));
+        Gson gson = new Gson();
+        String roadString = gson.toJson(new JsonUtils.RoadNoCells(road));
+        String lightsString = gson.toJson(new lightsJson(light));
+
+
+        connection = new Connection();
+        try {
+            connection.sendRoad(roadString);
+            connection.sendSth(lightsString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -91,6 +108,19 @@ public class Traffic implements Runnable {
 
     }
 
+    public void updateLights(List<TrafficLight> list){
+
+        for(TrafficLight l: list){
+            if(l.justChanged){
+                Gson gson = new Gson();
+                String lightsString = gson.toJson(new lightsJson(light));
+                System.out.println(lightsString);
+                l.justChanged=false;
+            }
+        }
+
+    }
+
     void printRoad(){
         for (int i = 0; i < road.getDistance(); i++) {
             for (int j = 0; j < road.getPasy(); j++) {
@@ -119,7 +149,27 @@ public class Traffic implements Runnable {
                 e.printStackTrace();
             }
             simulation();
+            Gson gson = new Gson();
+            String carsString = gson.toJson(cars);
+            try {
+                connection.sendSth(carsString);
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            updateLights(light);
             time ++;
         }
     }
+
+    public class lightsJson{
+        public String type="lights";
+        public List<TrafficLight> lights;
+       public  lightsJson(List<TrafficLight> l){
+            this.lights = l;
+        }
+
+    }
 }
+
