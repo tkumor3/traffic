@@ -1,5 +1,6 @@
 package Model;
 
+
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -7,6 +8,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import java.util.*;
+
 
 /**
  * Created by Tomek on 16.10.15.
@@ -22,7 +26,7 @@ public class Traffic implements Runnable {
     private Connection connection;
 
     public Traffic(){
-        road = new  Road(1000,3);
+        road = new  Road(640,3);
         cars = new LinkedList<Car>();
         wait_cars = new LinkedList<Car>();
         crossRoad = new LinkedList<CrossRoad>();
@@ -30,12 +34,13 @@ public class Traffic implements Runnable {
         cars.add(new Car());
         time = 0;
         generator = new Random();
-        light.add(new TrafficLight(50, 30, 10));
-        light.add(new TrafficLight(100,90,10));
-        crossRoad.add(new CrossRoad(51, 2));
+        //light.add(new TrafficLight(50,90,10));
+       // light.add(new TrafficLight(150,90,10));
+       // crossRoad.add(new CrossRoad(51,2,90,10));
         Gson gson = new Gson();
         String roadString = gson.toJson(new JsonUtils.RoadNoCells(road));
         String lightsString = gson.toJson(new lightsJson(light));
+        System.out.println(lightsString);
 
 
         connection = new Connection();
@@ -46,6 +51,20 @@ public class Traffic implements Runnable {
             e.printStackTrace();
         }
 
+        crossRoad.add(new CrossRoad(200, 2, 30 , 10));
+        crossRoad.add(new CrossRoad(400, 2, 30 , 10));
+        crossRoad.add(new CrossRoad(600, 2, 30 , 10));
+
+        for (CrossRoad road : crossRoad ){
+            light.add(road.getLight());
+        }
+        Collections.sort(light, new Comparator<TrafficLight>() {
+            @Override
+            public int compare(TrafficLight o1, TrafficLight o2) {
+                return o1.getDist() <  o2.getDist() ? -1 : 1;
+            }
+        });
+
     }
 
     void simulation() {
@@ -54,7 +73,7 @@ public class Traffic implements Runnable {
 
         for(CrossRoad crossRoad : this.crossRoad) {
             crossRoad.addCar(time);
-            while (crossRoad.canGo(road)) {
+            while (crossRoad.canGo2(road)) {
                 cars.add(crossRoad.getCar());
             }
         }
@@ -114,8 +133,14 @@ public class Traffic implements Runnable {
             if(l.justChanged){
                 Gson gson = new Gson();
                 String lightsString = gson.toJson(new lightsJson(light));
-                System.out.println(lightsString);
-                l.justChanged=false;
+                try {
+                    connection.sendSth(lightsString);
+                    System.out.println(lightsString);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                l.justChanged = false;
             }
         }
 
@@ -164,9 +189,9 @@ public class Traffic implements Runnable {
     }
 
     public class lightsJson{
-        public String type="lights";
+        public String type = "lights";
         public List<TrafficLight> lights;
-       public  lightsJson(List<TrafficLight> l){
+        public  lightsJson(List<TrafficLight> l){
             this.lights = l;
         }
 
