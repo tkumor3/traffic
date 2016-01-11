@@ -10,16 +10,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Desktop/json-lib-2.4-jdk15.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/Desktop/gson-2.2.2.jar/gson-2.2.2.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/gson-2.2.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

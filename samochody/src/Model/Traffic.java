@@ -24,6 +24,8 @@ public class Traffic implements Runnable {
     private LinkedList<TrafficLight> light;
     Random generator;
     private Connection connection;
+    private int counter = 0;
+    private int finishedCars = 0;
 
     public Traffic(){
         road = new  Road(640,2);
@@ -68,6 +70,7 @@ public class Traffic implements Runnable {
     }
 
     void simulation() {
+        counter++;
         for (TrafficLight light : this.light )
         light.driver(road);
 
@@ -84,6 +87,7 @@ public class Traffic implements Runnable {
                 a.makeMove(road.getRoads(),light);
             } catch (CarFinish carFinish) {
                 iterator.remove();
+                finishedCars++;
             }
 
 
@@ -92,14 +96,15 @@ public class Traffic implements Runnable {
             cars.add(wait_cars.getFirst());
             wait_cars.removeFirst();
         }
-        int proba = generator.nextInt(3) + 1;
-        if (proba == 3) {
+
+        if (counter == 6) {
             Car m_car = new Car();
             if (cars.getLast().getDys() > m_car.getBumper() && wait_cars.isEmpty())
                 cars.addLast(m_car);
             else {
                 wait_cars.add(m_car);
             }
+            counter = 0;
 
         }
 
@@ -178,9 +183,7 @@ public class Traffic implements Runnable {
             String carsString = gson.toJson(cars);
              try {
                  connection.sendSth(carsString);
-
-
-            } catch (IOException e) {
+             } catch (IOException e) {
                 e.printStackTrace();
             }
             updateLights(light);
