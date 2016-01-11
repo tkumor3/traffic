@@ -16,7 +16,7 @@ public class CrossRoad {
     CrossRoad(int dis, int interval,int red,int green){
         this.dis = dis;
         this.interval = interval;
-        light = new TrafficLight(dis-1,red,green);
+        light = new TrafficLight(dis-1,red*10,green*10);
         car = new LinkedList<Car>();
 
     }

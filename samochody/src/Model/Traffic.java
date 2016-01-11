@@ -53,9 +53,9 @@ public class Traffic implements Runnable {
             e.printStackTrace();
         }
 
-        crossRoad.add(new CrossRoad(200, 3, 30 , 10));
-        crossRoad.add(new CrossRoad(400, 3, 30 , 10));
-        crossRoad.add(new CrossRoad(600, 3, 30 , 10));
+        crossRoad.add(new CrossRoad(200, 3, 50 , 70));
+        crossRoad.add(new CrossRoad(400, 3, 50 , 70));
+        crossRoad.add(new CrossRoad(600, 3, 40 , 75));
 
         for (CrossRoad road : crossRoad ){
             light.add(road.getLight());
