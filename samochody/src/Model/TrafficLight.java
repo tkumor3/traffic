@@ -16,7 +16,7 @@ public class TrafficLight {
         this.time_red = time_red;
         this.time_green = time_green;
         can_go = true;
-        time_to_change = time_green;
+        time_to_change = time_red;
     }
 
     public boolean timer(){
