@@ -141,25 +141,25 @@ public class Car {
           //  pas -= 1;
 
         //}
-//        try {
-//            while ((!road[my_pos_dis + 1][my_pos_pas].is_car()) && free_cell <= v + 1) {
-//                if(my_pos_dis + 1 == cloest_light.getDist()){
-//                    if(!cloest_light.isCan_go()){
-//                        dys = my_pos_dis - 3;
-//                        free_cell = 0;
-//                        next_v = 0;
-//                        wait = true;
-//                        return false;
-//                    }else{
-//                        wait = false;
-//
-//                    }
-//
-//                }
-//            my_pos_dis += 1;
-//            free_cell += 1;
-//             }
-//
+        try {
+            while ((!road[my_pos_dis + 1][my_pos_pas].is_car()) && free_cell <= v + 1) {
+                if(my_pos_dis + 1 == cloest_light.getDist()){
+                    if(!cloest_light.isCan_go()){
+                        dys = my_pos_dis - 3;
+                        free_cell = 0;
+                        next_v = 0;
+                        wait = true;
+                        return false;
+                    }else{
+                        wait = false;
+
+                    }
+
+                }
+            my_pos_dis += 1;
+            free_cell += 1;
+             }
+
 //            if (free_cell < v + 1) {
 //                next_v = road[my_pos_dis + 1][my_pos_pas].getV();
 //                if (next_v + free_cell < v) {
@@ -172,14 +172,14 @@ public class Car {
 //
 //                    }
 //                }
-//
-//
-//            } else {
-//                return true;
-//            }
-//        } catch (Exception e) {
-//            throw new CarFinish();
-//        }
+
+
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            throw new CarFinish();
+        }
         return true;
     }
 
