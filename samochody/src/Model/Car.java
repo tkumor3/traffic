@@ -174,9 +174,9 @@ public class Car {
 //                }
 
 
-            } else {
-                return true;
-            }
+//            } else {
+//                return true;
+//            }
         } catch (Exception e) {
             throw new CarFinish();
         }
