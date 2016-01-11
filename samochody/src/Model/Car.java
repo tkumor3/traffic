@@ -10,73 +10,52 @@ public class Car {
     private int pas, dys;
     private int v, vmax;
     private int length;
-    private boolean is_safety;
-    private int free_cell;
+    private boolean is_safe;
     private int next_v;
     private static int ID = 0;
     private Sensor sensorl;
     private Sensor sensorr;
-    private Sensor lsensor;
     private int carID;
     private int a;
-    private TrafficLight cloest_light;
-    private boolean wait;
+    private TrafficLight closest_light;
+    private boolean wait = false;
 
+    private boolean shouldCount = false;
 
     Car() {
+        shouldCount = true;
         Car.ID++;
         carID = ID;
-        System.out.println(carID);
         length = 3;
         pas = 0;
         dys = 15;
         pas = 0;
         Random generator = new Random();
-        int i = generator.nextInt(6) + 1;
-        v = i;
-        pas = i%2;
-        vmax = i%3 + 6;
-        a = i%3 +1;
+        vmax =  6 + generator.nextInt(3);
+        v = vmax;
+        pas = generator.nextInt(2);
+        a = generator.nextInt(2) + 1;
         sensorl = new LeftSensor();
         sensorr = new RightSensor();
-        lsensor = new LightSensor();
 
 
     }
     Car(int dys) {
+        shouldCount = false;
         Car.ID++;
         carID = ID;
-        System.out.println(carID);
         length = 3;
         pas = 0;
         this.dys = dys;
         pas = 0;
         Random generator = new Random();
-        int i = generator.nextInt(6) + 1;
-        v = 4;
+        vmax =  6 + generator.nextInt(3);
+        v = vmax;
         pas = 0;
-        vmax = i%3 + 6;
-        a = i%3 +1;
+        a = generator.nextInt(2) + 1;
         sensorl = new LeftSensor();
         sensorr = new RightSensor();
-        lsensor = new LightSensor();
 
-
-    }
-    Car(int pas,int dys ,int vmax, int v, int a, int length){
-
-        Car.ID++;
-        carID = ID;
-        System.out.println(carID);
-        this.length = length;
-        this.pas = pas;
-        this.dys = dys;
-        this.v = v;
-        this.vmax = vmax;
-        this.a = a;
-        sensorl = new LeftSensor();
-        sensorr = new RightSensor();
-        lsensor = new LightSensor();
 
     }
 
@@ -84,9 +63,9 @@ public class Car {
      * przyspieszenie naszego pojazdu ale tylko jesli jest to bezpieczne
      */
 
-    private void acceletion() {
+    private void accelerate() {
         if(!wait) {
-            if (!is_safety) {
+            if (!is_safe) {
                 v -= a;
             } else {
                 if (v + a <= vmax) {
@@ -104,16 +83,12 @@ public class Car {
 
     private void move() {
 
-        if(is_safety) {
+        if(is_safe) {
             dys += v;
-            acceletion();
+            accelerate();
 
         }else {
-
-                dys = (free_cell + dys);
-                v = next_v;
-
-
+            dys += next_v;
         }
     }
 
@@ -123,69 +98,60 @@ public class Car {
      */
     private boolean checkRoad(Cell_Road[][] road, int my_pos_dis, int my_pos_pas, LinkedList<TrafficLight> lights) throws CarFinish {
         if(my_pos_dis > 620)
-        throw new CarFinish();
+            throw new CarFinish(shouldCount);
+
         my_pos_dis = my_pos_dis + length;
-        free_cell = 0;
 
 
         for (TrafficLight light : lights){
-            if(light.getDist() > my_pos_dis){
-                cloest_light = light;
+            if(light.getDist() > my_pos_dis ){
+                closest_light = light;
                 break;
             }
         }
 
+        int distanceToCar = 0;
+        int distanceToLights = 0;
 
-
-        //if (pas > 0 && sensorr.CheckRoad(road, my_pos_dis, my_pos_pas, v, length)) {
-          //  pas -= 1;
-
-        //}
-        try {
-            while ((!road[my_pos_dis + 1][my_pos_pas].is_car()) && free_cell <= v + 1) {
-                if(my_pos_dis + 1 == cloest_light.getDist()){
-                    if(!cloest_light.isCan_go()){
-                        dys = my_pos_dis - 3;
-                        free_cell = 0;
-                        next_v = 0;
-                        wait = true;
-                        return false;
-                    }else{
-                        wait = false;
-
-                    }
-
-                }
-            my_pos_dis += 1;
-            free_cell += 1;
-             }
-
-//            if (free_cell < v + 1) {
-//                next_v = road[my_pos_dis + 1][my_pos_pas].getV();
-//                if (next_v + free_cell < v) {
-//                    if (pas < 1 && sensorl.CheckRoad(road, dys + 3, my_pos_pas, v, length)) {
-////                        pas = pas+1;
-//                        return true;
-//                    } else {
-//
-//                        return false;
-//
-//                    }
-//                }
-
-
-//            } else {
-//                return true;
-//            }
-        } catch (Exception e) {
-            throw new CarFinish();
+        while ((!road[my_pos_dis + distanceToCar][my_pos_pas].is_car()) && distanceToCar <= v + 1) {
+            distanceToCar++;
         }
+
+        if(closest_light != null)
+            while (my_pos_dis + distanceToLights != closest_light.getDist() && distanceToLights <= v + length) {
+                distanceToLights++;
+            }
+
+        if (distanceToCar < 2 + v) {
+            next_v = distanceToCar - 1;
+
+            if (pas < 1 && sensorl.CheckRoad(road, dys + 5, my_pos_pas, v, length)) {
+                pas = pas+1;
+                return true;
+            } else if (pas > 0 && sensorr.CheckRoad(road, dys + 5, my_pos_pas, v, length)) {
+                pas = pas-1;
+                return true;
+            }
+
+            return false;
+        }
+
+
+        if (closest_light != null && distanceToLights < length + 1 + v) {
+            if (closest_light.isCan_go()) {
+                return true;
+            } else {
+                next_v = distanceToLights - 1;
+                return false;
+            }
+        }
+
         return true;
     }
 
 
     public void makeMove(Cell_Road [][] my_road,LinkedList<TrafficLight> light) throws CarFinish {
-        is_safety = checkRoad(my_road,dys,pas,light);
+        is_safe = checkRoad(my_road,dys,pas,light);
         move();
     }
 

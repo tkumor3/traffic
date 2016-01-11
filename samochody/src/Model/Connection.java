@@ -21,14 +21,17 @@ public class Connection {
         final int portNumber = 8001;
 
         socket = new Socket(host, portNumber);
-        out = new PrintWriter(socket.getOutputStream(), true);
-        out.println(json);
+        if(socket != null)
+            out = new PrintWriter(socket.getOutputStream(), true);
+        if(out != null)
+            out.println(json);
 
     }
 
     public void sendSth(String carsTable) throws IOException{
 
-        out.println(carsTable);
+        if(out != null)
+            out.println(carsTable);
 
     }
 

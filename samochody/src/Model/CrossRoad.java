@@ -16,8 +16,8 @@ public class CrossRoad {
     CrossRoad(int dis, int interval,int red,int green){
         this.dis = dis;
         this.interval = interval;
-        light = new TrafficLight(dis-1,red*10,green*10);
-        car = new LinkedList<Car>();
+        light = new TrafficLight(dis-1,red,green);
+        car = new LinkedList<>();
 
     }
 
@@ -25,7 +25,7 @@ public class CrossRoad {
 
     public void addCar(int time){
         if(time%interval == 0){
-            car.add(new Car(dis));
+            car.add(new Car(dis+3));
         }
 
     }
@@ -58,22 +58,5 @@ public class CrossRoad {
         return light;
     }
 
-    public boolean canGo(Road road) {
-        if ((road.getRoads()[dis-1][0].getType() == TypeOfCell.RedLIGHTS)&& !car.isEmpty()) {
-            for (int j = 0; j < road.getPasy(); j++) {
-                free_crossroad = true;
-                for (int i = dis ; i < dis + 4; i++) {
-                    if (!(road.getRoads()[i][j].getType() == TypeOfCell.EMPTY)) {
-                        free_crossroad = false;
-                        break;
-                    }
-                }
-                if (free_crossroad == true) {
-                    pas = j;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+
 }

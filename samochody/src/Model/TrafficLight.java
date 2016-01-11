@@ -15,7 +15,7 @@ public class TrafficLight {
         this.dist = dist;
         this.time_red = time_red;
         this.time_green = time_green;
-        can_go = true;
+        can_go = false;
         time_to_change = time_red;
     }
 
@@ -46,9 +46,6 @@ public class TrafficLight {
                     road.setRedLights(dist,i);
                 }
             }
-
-
-
 
         }
     }

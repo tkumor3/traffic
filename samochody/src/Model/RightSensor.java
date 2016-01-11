@@ -5,8 +5,7 @@ package Model;
  */
 public class RightSensor implements Sensor  {
     @Override
-    public boolean CheckRoad(Cell_Road[][] myRoad, int dis, int pas, int v, int lenght) throws CarFinish {
-        try {
+    public boolean CheckRoad(Cell_Road[][] myRoad, int dis, int pas, int v, int lenght){
             Cell_Road pom;
 
                 for (int j = dis - lenght; j < dis + v; j++) {
@@ -17,8 +16,5 @@ public class RightSensor implements Sensor  {
                 }
                 return true;
 
-        }catch (Exception e){
-            throw new CarFinish();
-        }
     }
 }

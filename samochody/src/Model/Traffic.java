@@ -25,24 +25,18 @@ public class Traffic implements Runnable {
     Random generator;
     private Connection connection;
     private int counter = 0;
-    private int finishedCars = 0;
 
     public Traffic(){
         road = new  Road(640,2);
-        cars = new LinkedList<Car>();
-        wait_cars = new LinkedList<Car>();
-        crossRoad = new LinkedList<CrossRoad>();
-        light = new LinkedList<TrafficLight>();
+        cars = new LinkedList<>();
+        wait_cars = new LinkedList<>();
+        crossRoad = new LinkedList<>();
+        light = new LinkedList<>();
         cars.add(new Car());
         time = 0;
         generator = new Random();
-        //light.add(new TrafficLight(50,90,10));
-       // light.add(new TrafficLight(150,90,10));
-       // crossRoad.add(new CrossRoad(51,2,90,10));
         Gson gson = new Gson();
         String roadString = gson.toJson(new JsonUtils.RoadNoCells(road));
-        //System.out.println(lightsString);
-
 
         connection = new Connection();
         try {
@@ -51,9 +45,9 @@ public class Traffic implements Runnable {
             e.printStackTrace();
         }
 
-        crossRoad.add(new CrossRoad(200, 3, 50 , 70));
-        crossRoad.add(new CrossRoad(400, 3, 50 , 70));
-        crossRoad.add(new CrossRoad(600, 3, 40 , 75));
+        crossRoad.add(new CrossRoad(200, 41, 50 , 70)); //samochod co 4.1 sekundy
+        crossRoad.add(new CrossRoad(400, 50, 50 , 70)); // samochod co 5 sekund
+        crossRoad.add(new CrossRoad(600, 1000000000, 40 , 75)); // nie wjezdzaja
 
         for (CrossRoad road : crossRoad ){
             light.add(road.getLight());
@@ -87,11 +81,10 @@ public class Traffic implements Runnable {
                 a.makeMove(road.getRoads(),light);
             } catch (CarFinish carFinish) {
                 iterator.remove();
-                finishedCars++;
             }
 
-
         }
+
         if (!wait_cars.isEmpty() && cars.getLast().getDys() > wait_cars.getFirst().getBumper()) {
             cars.add(wait_cars.getFirst());
             wait_cars.removeFirst();
@@ -117,10 +110,7 @@ public class Traffic implements Runnable {
         if (!cars.isEmpty()) {
             road.reset();
             for (Car a : cars) {
-
                 road.setCar(a.getDys(), a.getPas(), a.getV(), a.getLength());
-
-
             }
         }
     }
@@ -144,8 +134,6 @@ public class Traffic implements Runnable {
                 String lightsString = gson.toJson(new lightsJson(light));
                 try {
                     connection.sendSth(lightsString);
-                    System.out.println(lightsString);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -155,20 +143,6 @@ public class Traffic implements Runnable {
 
     }
 
-    void printRoad(){
-        for (int i = 0; i < road.getDistance(); i++) {
-            for (int j = 0; j < road.getPasy(); j++) {
-                 if(road.getRoads()[i][j].is_car()){
-                     System.out.print(road.getRoads()[i][j].getV());
-                 }else {
-                     System.out.print("_");
-                 }
-
-                 }
-             System.out.println("");
-
-            }
-    }
 
     public Road getRoad() {
         return road;
@@ -191,7 +165,13 @@ public class Traffic implements Runnable {
                 e.printStackTrace();
             }
             updateLights(light);
-            time ++;
+            time++;
+
+            if(CarFinish.count == 50)
+                System.out.println("time: " + time + " loops");
+
+            System.out.println("cars count: "  + CarFinish.count);
+
         }
     }
 
