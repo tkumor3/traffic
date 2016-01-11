@@ -67,6 +67,8 @@ public class Traffic implements Runnable {
             }
         });
 
+        updateLights(light, true);
+
     }
 
     void simulation() {
@@ -133,9 +135,13 @@ public class Traffic implements Runnable {
     }
 
     public void updateLights(List<TrafficLight> list){
+        updateLights(list, false);
+    }
+
+    public void updateLights(List<TrafficLight> list, boolean update){
 
         for(TrafficLight l: list){
-            if(l.justChanged){
+            if(update || l.justChanged){
                 Gson gson = new Gson();
                 String lightsString = gson.toJson(new lightsJson(light));
                 try {
