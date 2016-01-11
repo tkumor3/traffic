@@ -41,14 +41,12 @@ public class Traffic implements Runnable {
        // crossRoad.add(new CrossRoad(51,2,90,10));
         Gson gson = new Gson();
         String roadString = gson.toJson(new JsonUtils.RoadNoCells(road));
-        String lightsString = gson.toJson(new lightsJson(light));
         //System.out.println(lightsString);
 
 
         connection = new Connection();
         try {
            connection.sendRoad(roadString);
-           connection.sendSth(lightsString);
         } catch (IOException e) {
             e.printStackTrace();
         }
