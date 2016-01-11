@@ -137,10 +137,10 @@ public class Car {
 
 
 
-        if (pas > 0 && sensorr.CheckRoad(road, my_pos_dis, my_pos_pas, v, length)) {
-            pas -= 1;
+        //if (pas > 0 && sensorr.CheckRoad(road, my_pos_dis, my_pos_pas, v, length)) {
+          //  pas -= 1;
 
-        }
+        //}
         try {
             while ((!road[my_pos_dis + 1][my_pos_pas].is_car()) && free_cell <= v + 1) {
                 if(my_pos_dis + 1 == cloest_light.getDist()){
@@ -164,7 +164,7 @@ public class Car {
                 next_v = road[my_pos_dis + 1][my_pos_pas].getV();
                 if (next_v + free_cell < v) {
                     if (pas < 1 && sensorl.CheckRoad(road, dys + 3, my_pos_pas, v, length)) {
-                        pas = pas+1;
+//                        pas = pas+1;
                         return true;
                     } else {
 
